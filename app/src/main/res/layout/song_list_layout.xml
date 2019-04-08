@@ -28,20 +28,19 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="90dp"
-            android:src="@drawable/refresh"
+            android:src="@drawable/basket"
             android:backgroundTint="@color/black"
             android:id="@+id/orderimage"
 
             />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:id="@+id/orderid"
+            android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/orderimage"
-            android:text="Order Amount : 20RS"/>
-
+            android:id="@+id/totalprice"
+            android:paddingRight="@dimen/_15sdp"
+            android:text="2 Items"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -52,15 +51,7 @@
             android:id="@+id/itemcount"
             android:text="2 Items"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/orderimage"
-            android:id="@+id/totalprice"
-            android:layout_below="@+id/itemcount"
-            android:paddingRight="@dimen/_15sdp"
-            android:text="2 Items"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,7 +70,7 @@
             android:layout_toRightOf="@+id/orderimage"
             android:id="@+id/status"
             android:layout_below="@+id/totalprice"
-            android:text="Payment : COD"/>
+            android:text=""/>
 
         <TextView
             android:layout_width="match_parent"
@@ -89,7 +80,7 @@
             android:gravity="right"
             android:id="@+id/time"
             android:layout_below="@+id/itemcount"
-            android:text="Monday 20th 22:33:44"/>
+            android:text=""/>
 
 
 

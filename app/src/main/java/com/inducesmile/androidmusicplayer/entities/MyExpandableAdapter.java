@@ -1,6 +1,7 @@
 package com.inducesmile.androidmusicplayer.entities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.inducesmile.androidmusicplayer.R;
+import com.inducesmile.androidmusicplayer.order_Details;
+
 import java.util.ArrayList;
 
 /**
@@ -112,7 +115,7 @@ public class MyExpandableAdapter implements ExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean b, View contentView, ViewGroup parent) {
-        status_sorter country = continentList.get(groupPosition).getCountry().get(childPosition);
+        final status_sorter country = continentList.get(groupPosition).getCountry().get(childPosition);
         if (contentView == null) {
             contentView = LayoutInflater.from(context).inflate(R.layout.song_list_layout, parent, false);
         }     TextView orderid;
@@ -133,13 +136,23 @@ public class MyExpandableAdapter implements ExpandableListAdapter {
         card=(CardView) contentView.findViewById(R.id.card);
         submit=(Button) contentView.findViewById(R.id.viewbutton);
 
-        orderid.setText(country.getorderid());
-        payment.setText(country.getpaymentmode());
+        //orderid.setText(country.getorderid());
+        payment.setText("Payment Type : "+country.getpaymentmode());
         time.setText(country.getime());
-       // itemcount.setText(country.getitemcounts());
-        price.setText(country.gettotalprice());
-        status.setText(country.getStatus());
+        System.out.println("ytem "+country.getitemcounts());
 
+          itemcount.setText("No of Items : "+country.getitemcounts());
+        price.setText("Order Amount : "+country.gettotalprice());
+       // status.setText(country.getStatus());
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ip=new Intent(context, order_Details.class);
+                ip.putExtra("id",country.getorderid());
+                context.startActivity(ip);
+            }
+        });
 
         return contentView;
     }

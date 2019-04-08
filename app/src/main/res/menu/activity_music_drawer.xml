@@ -4,7 +4,7 @@
     <group android:id="@+id/one" android:checkableBehavior="single">
         <item
             android:id="@+id/nav_library"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@android:drawable/ic_menu_view"
             android:title="@string/music_library" />
     </group>
 

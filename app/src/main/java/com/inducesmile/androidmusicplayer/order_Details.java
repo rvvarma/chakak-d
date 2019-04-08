@@ -24,7 +24,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -42,6 +45,7 @@ public class order_Details extends AppCompatActivity {
     JSONArray ordersiterate;
     TextView status,phone,itemcount,payment,price,username,address,time;
 Button phonecall,maps;
+public Double latitude,longitude;
     Button submit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,7 @@ Button phonecall,maps;
        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(order_Details.this);
         ordercycleview.setLayoutManager(linearLayoutManager);
         ordercycleview.setHasFixedSize(true);
-        Intent ip=getIntent();
+        final Intent ip=getIntent();
         status=(TextView) findViewById(R.id.status);
         phone=(TextView) findViewById(R.id.phone);
         itemcount=(TextView) findViewById(R.id.itemcount);
@@ -70,7 +74,7 @@ Button phonecall,maps;
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:0123456789"));
+                intent.setData(Uri.parse("tel:"+phone.getText().toString()));
                 startActivity(intent);
             }
         });
@@ -78,8 +82,9 @@ Button phonecall,maps;
         maps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("lting "+latitude);
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("geo:0,0?q=37.423156,-122.084917 ( Raghava )"));
+                        Uri.parse("geo:0,0?q="+latitude+","+longitude+" ( "+username.getText().toString()+")"));
                 startActivity(intent);
             }
         });
@@ -93,12 +98,13 @@ Button phonecall,maps;
         AsyncTaskRunner ast=new AsyncTaskRunner();
         ast.execute(ip.getStringExtra("id"));
         neworders = new ArrayList<order_details_object>();
-        submit=(Button) findViewById(R.id.picked);
+        submit=(Button) findViewById(R.id.changestatus);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 System.out.println("sdv" + order_details_adapter.count());
+               final changestatusrunner cstr=new changestatusrunner();
 
                 if (order_details_adapter.count() == ordersiterate.length()) {
                     System.out.println("sdv" + order_details_adapter.count());
@@ -112,18 +118,27 @@ Button phonecall,maps;
                     builder.setItems(fonts, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            String status="";
+                            String orderstatus="";
                             if ("Picked".equals(fonts[which])){
                                 Toast.makeText(order_Details.this,"you Choosed Picked", Toast.LENGTH_SHORT).show();
+                                status="open";
+                                orderstatus="Picked";
                             }
                             else if ("Delivered".equals(fonts[which])){
+                                status="Close";
+                                orderstatus="Delivered";
                                 Toast.makeText(order_Details.this,"you Choosed Delivered", Toast.LENGTH_SHORT).show();
                             }
                             else if ("Other".equals(fonts[which])){
+                                status="open";
+                                orderstatus="Other";
                                 Toast.makeText(order_Details.this,"you Choosed others", Toast.LENGTH_SHORT).show();
                             }
 
-                            // the user clicked on colors[which]
 
+                            // the user clicked on colors[which]
+                            cstr.execute(ip.getStringExtra("id"),status,orderstatus);
                         }
                     });
                     builder.show();
@@ -239,14 +254,11 @@ Button phonecall,maps;
                     payment.setText("Payment : "+userdata.getString("payment"));
                     price.setText("Total Price : "+userdata.getString("price"));
                     phone.setText("919000000034");
+                    latitude=userdata.getDouble("latitude");
+                    longitude=userdata.getDouble("longitude");
                     address.setText(userdata.getString("address"));
-                    Date date = new java.util.Date(Integer.parseInt(userdata.getString("time"))*1000L);
 
-                    SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd-MM-yyyy hh:mm:ss ");
-// give a timezone reference for formatting (see comment at the bottom)
-                    sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT+5:30"));
-                    String formattedDate = sdf.format(date);
-                    time.setText(formattedDate);
+                    time.setText(userdata.getString("time"));
                     mAdapter = new order_details_adapter(order_Details.this, neworders);
                     mAdapter.notifyDataSetChanged();
 
@@ -273,6 +285,104 @@ Button phonecall,maps;
     }
 
 
+    private class changestatusrunner extends AsyncTask<String, String, String> {
+
+        String resp;
+        ProgressDialog progressDialog;
+        public static final String REQUEST_METHOD = "PUT";
+        public static final int READ_TIMEOUT = 15000;
+        public static final int CONNECTION_TIMEOUT = 15000;
+        String inputLine;
+
+        @Override
+        protected String doInBackground(String... params) {
+            publishProgress("Sleeping..."); // Calls onProgressUpdate()
+            try {
+                URL myUrl = new URL("https://3q4jnoy6zf.execute-api.ap-south-1.amazonaws.com/prod/orderdetails-delivery-boys");
+                //Create a connection
+                HttpURLConnection connection = (HttpURLConnection)
+                        myUrl.openConnection();
+                //Set methods and timeouts
+                connection.setRequestMethod(REQUEST_METHOD);
+                connection.setReadTimeout(READ_TIMEOUT);
+                connection.setConnectTimeout(CONNECTION_TIMEOUT);
+                connection.setRequestProperty("Content-Type","application/json");
+                JSONObject data=new JSONObject();
+                data.put("operation","put");
+                data.put("status",params[1]);
+                data.put("orderstatus",params[2]);
+
+                data.put("orderid",params[0]);
+//String pop='{operation:post}';
+
+                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
+                os.writeBytes(data.toString());
+                // Log.i(MainActivity.class.toString(), jsonObject.toString());
+                os.flush();
+                os.close();
+                os.close();                //Connect to our url
+                //   connection.connect();
+                System.out.println(" code :"+connection.getResponseCode());
+                //Create a new InputStreamReader
+                InputStreamReader streamReader = new
+                        InputStreamReader(connection.getInputStream());
+                //Create a new buffered reader and String Builder
+                BufferedReader reader = new BufferedReader(streamReader);
+                StringBuilder stringBuilder = new StringBuilder();
+                //Check if the line we are reading is not null
+                while ((inputLine = reader.readLine()) != null) {
+                    stringBuilder.append(inputLine);
+                }
+                //Close our InputStream and Buffered reader
+                reader.close();
+                streamReader.close();
+                //Set our result equal to our stringBuilder
+                resp = stringBuilder.toString();
+            }
+            catch(Exception e){
+                e.printStackTrace();
+                resp = null;
+            }
+            return resp;
+
+        }
+
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            // execution of result of Long time consuming operation
+            progressDialog.dismiss();
+            // finalResult.setText(result);
+
+            JSONObject jb= null;
+            try {
+                // jb = new JSONObject(result);
+                System.out.println("check2 "+result);
+                Intent iopp=new Intent(order_Details.this,MusicActivity.class);
+                startActivity(iopp);
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(order_Details.this,"Slug", "Please Wait");
+        }
+
+
+        @Override
+        protected void onProgressUpdate(String... text) {
+            //  finalResult.setText(text[0]);
+
+        }
+    }
 
 
 

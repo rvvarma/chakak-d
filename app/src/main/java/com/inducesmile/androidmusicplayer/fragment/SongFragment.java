@@ -173,18 +173,13 @@ ast.execute();
 
                         for (int i = 0; i < ordersiterate.length(); i++) {
 
-//
+
                             JSONObject jb1 = ordersiterate.getJSONObject(i);
                             //    Timestamp timestamp1 = new Timestamp(new Date(jb1.getString("time")));
                             int popp = new JSONArray(jb1.getString("itemid")).length();
 
-
                             asiaCountries.add(new status_sorter(jb1.getString("orderid"), jb1.getString("username"), jb1.getString("time"), popp, jb1.getString("price"), "963564566", jb1.getString("payment"), jb1.getString("orderstatus")));
 
-
-
-                            // neworders.add(new SongObject(jb1.getString("orderid"), jb1.getString("username"), jb1.getString("time"),popp,jb1.getString("price"),"963564566",jb1.getString("payment"),jb1.getString("status")));
-                            //  pendingorders.add(new pendingorders(jb1.getString("orderid"), jb1.getString("username"), jb1.getString("time"),popp,jb1.getString("price"),"963564566",jb1.getString("payment"),jb1.getString("status")));
 
                         }
                         asiaContinent.setCountry(asiaCountries);
@@ -197,35 +192,8 @@ ast.execute();
                     adapter = new MyExpandableAdapter(getActivity(), itemadapter);
 
                     expandableListView.setAdapter(adapter);
-                 /*   for (int i = 0; i < ordersiterate.length(); i++) {
-
-//
-                        JSONObject jb1 = ordersiterate.getJSONObject(i);
-                        //    Timestamp timestamp1 = new Timestamp(new Date(jb1.getString("time")));
-                        int popp = new JSONArray(jb1.getString("itemid")).length();
-                         asiaContinent = new items_sorter(i, jb1.getString("orderstatus"), null, R.drawable.bee);
-
-                        asiaContinent1 = new items_sorter(i, jb1.getString("orderstatus"), null, R.drawable.bee);
-
-                        asiaCountries.add(new status_sorter(jb1.getString("orderid"), jb1.getString("username"), jb1.getString("time"), popp, jb1.getString("price"), "963564566", jb1.getString("payment"), jb1.getString("orderstatus")));
-                        asiaCountries1.add(new status_sorter(jb1.getString("orderid"), jb1.getString("username"), jb1.getString("time"), popp, jb1.getString("price"), "963564566", jb1.getString("payment"), jb1.getString("orderstatus")));
-
-                        asiaContinent.setCountry(asiaCountries);
-                        asiaContinent1.setCountry(asiaCountries1);
 
 
-                        // neworders.add(new SongObject(jb1.getString("orderid"), jb1.getString("username"), jb1.getString("time"),popp,jb1.getString("price"),"963564566",jb1.getString("payment"),jb1.getString("status")));
-                        //  pendingorders.add(new pendingorders(jb1.getString("orderid"), jb1.getString("username"), jb1.getString("time"),popp,jb1.getString("price"),"963564566",jb1.getString("payment"),jb1.getString("status")));
-
-                    }
-                    itemadapter.add(asiaContinent);
-                    itemadapter.add(asiaContinent1);
-
-
-                    adapter = new MyExpandableAdapter(getActivity(), itemadapter);
-
-                    expandableListView.setAdapter(adapter);
-*/
                 }
 
 

@@ -140,7 +140,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Change Order Status"
-            android:id="@+id/picked"
+            android:id="@+id/changestatus"
             android:textColor="@color/white"
             android:background="@color/colorPrimary"
             android:layout_weight="0"/>
