@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -14,6 +15,7 @@
         android:label="Order Details"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".order_Details"></activity>
         <activity
             android:name=".LoginActivity"
@@ -29,6 +31,7 @@
             android:name=".MusicActivity"
             android:label="@string/title_activity_music"
             android:theme="@style/AppTheme.NoActionBar" />
+        <service android:name=".services.LocationMonitoringService" />
     </application>
 
 </manifest>

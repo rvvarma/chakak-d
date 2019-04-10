@@ -52,7 +52,7 @@ public class MusicActivity extends AppCompatActivity{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 //
-
+       // startService(new Intent(this, LocationMonitoringService.class));
         Intent i =new Intent(getApplicationContext(), LocationMonitoringService.class);
         startService(i);
 
