@@ -21,6 +21,47 @@
             "package_name": "com.inducesmile.androidmusicplayer",
             "certificate_hash": "c3d42175783c38770f901f43df8756f4ddc126b3"
           }
+        },
+        {
+          "client_id": "715520408027-cnu9r548j90bkq4vf4vsfgjh84hlsos6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWA2hLfcyHJXm18ObbkPkf7qLGrsmezhc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "715520408027-cnu9r548j90bkq4vf4vsfgjh84hlsos6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715520408027:android:8d1506acff9f3921",
+        "android_client_info": {
+          "package_name": "com.slug.hub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "715520408027-vtjgra9r5932btiontkqiqlm31d9jpfg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.slug.hub",
+            "certificate_hash": "c3d42175783c38770f901f43df8756f4ddc126b3"
+          }
+        },
+        {
+          "client_id": "715520408027-cnu9r548j90bkq4vf4vsfgjh84hlsos6.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -46,7 +87,12 @@
           "package_name": "io.cordova.raghava122"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "715520408027-cnu9r548j90bkq4vf4vsfgjh84hlsos6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBWA2hLfcyHJXm18ObbkPkf7qLGrsmezhc"
