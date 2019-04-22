@@ -1,12 +1,16 @@
 package com.inducesmile.androidmusicplayer;
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +19,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -32,6 +37,14 @@ import com.inducesmile.androidmusicplayer.fragment.PlaylistFragment;
 import com.inducesmile.androidmusicplayer.fragment.SongFragment;
 import com.inducesmile.androidmusicplayer.services.LocationMonitoringService;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
+
 public class MusicActivity extends AppCompatActivity{
 
     private static final String TAG = MusicActivity.class.getSimpleName();
@@ -39,7 +52,8 @@ public class MusicActivity extends AppCompatActivity{
     private FragmentManager fragmentManager;
     private Fragment fragment = null;
     private BroadcastReceiver broadcastReceiver;
-
+    Double latitude,longitude;
+    Geocoder geocoder;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -53,8 +67,8 @@ public class MusicActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
 //
        // startService(new Intent(this, LocationMonitoringService.class));
-        Intent i =new Intent(getApplicationContext(), LocationMonitoringService.class);
-        startService(i);
+        Intent intent = new Intent(getApplicationContext(), LocationMonitoringService.class);
+        startService(intent);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -104,22 +118,7 @@ public class MusicActivity extends AppCompatActivity{
 
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(broadcastReceiver == null){
-            broadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
 
-                   // textView.append("\n" +intent.getExtras().get("coordinates"));
-            //        Toast.makeText(context, "ds "+ intent.getExtras().get("coordinates"),2000).show();
-                    System.out.println("sdgfs "+intent.getExtras().get("coordinates"));
-                }
-            };
-        }
-        registerReceiver(broadcastReceiver,new IntentFilter("location_update"));
-    }
 
     @Override
     protected void onDestroy() {
@@ -206,4 +205,49 @@ public class MusicActivity extends AppCompatActivity{
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+      //  registerReceiver(broadcastReceiver1, new IntentFilter(LocationMonitoringService));
+        if(broadcastReceiver == null){
+            broadcastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Date date = new Date();
+                    System.out.println(dateFormat.format(date)); //2016/11/16 12:08:43
+
+                    Toast.makeText(getApplicationContext(),dateFormat.format(date)+"Hello Javatpoint "+intent.getExtras().get("coordinates"),Toast.LENGTH_SHORT).show();
+
+                   //Toast.makeText(,"\n" +intent.getExtras().get("coordinates"),Toast.LENGTH_LONG).show();
+                    NotificationCompat.Builder builder =
+                            new NotificationCompat.Builder(getApplicationContext())
+                                    .setSmallIcon(R.drawable.musicicon)
+                                    .setContentTitle("Notifications Example")
+                                    .setContentText(dateFormat.format(date)+" Hello Javatpoint "+intent.getExtras().get("coordinates"));
+
+                    Intent notificationIntent = new Intent(getApplicationContext(), SplashActivity.class);
+                    PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    builder.setContentIntent(contentIntent);
+
+                    // Add as notification
+                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    manager.notify(22, builder.build());
+                }
+            };
+        }
+        registerReceiver(broadcastReceiver,new IntentFilter("location_update"));
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        unregisterReceiver(broadcastReceiver1);
+    }
+
+
 }
+
+
