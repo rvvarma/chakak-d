@@ -51,7 +51,6 @@ public class MusicActivity extends AppCompatActivity{
 
     private FragmentManager fragmentManager;
     private Fragment fragment = null;
-    private BroadcastReceiver broadcastReceiver;
     Double latitude,longitude;
     Geocoder geocoder;
 
@@ -159,93 +158,46 @@ public class MusicActivity extends AppCompatActivity{
 
         return super.onOptionsItemSelected(item);
     }
+    private void addNotification(Double lat,Double lng) {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.musicicon)
+                        .setContentTitle("Slug is Monitoring You")
+                        .setContentText("Latitude "+lat +"  longitude: "+lng);
 
-    /*private void enable_buttons() {
+        Intent notificationIntent = new Intent(this, SplashActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
 
-        btn_start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i =new Intent(getApplicationContext(),GPS_Service.class);
-                startService(i);
-            }
-        });
-
-        btn_stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent i = new Intent(getApplicationContext(),GPS_Service.class);
-                stopService(i);
-
-            }
-        });
-
-    }*/
-
-    private boolean runtime_permissions() {
-        if(Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},100);
-
-            return true;
-        }
-        return false;
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
     }
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 100){
-            if( grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
-             //   enable_buttons();
-            }else {
-                runtime_permissions();
-            }
+            latitude = Double.valueOf(intent.getStringExtra("latutide"));
+            longitude = Double.valueOf(intent.getStringExtra("longitude"));
+            Toast.makeText(getApplicationContext(),latitude+" "+longitude,Toast.LENGTH_LONG).show();
+addNotification(latitude,longitude);
         }
-    }
+    };
 
     @Override
     protected void onResume() {
         super.onResume();
-      //  registerReceiver(broadcastReceiver1, new IntentFilter(LocationMonitoringService));
-        if(broadcastReceiver == null){
-            broadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                    Date date = new Date();
-                    System.out.println(dateFormat.format(date)); //2016/11/16 12:08:43
-
-                    Toast.makeText(getApplicationContext(),dateFormat.format(date)+"Hello Javatpoint "+intent.getExtras().get("coordinates"),Toast.LENGTH_SHORT).show();
-
-                   //Toast.makeText(,"\n" +intent.getExtras().get("coordinates"),Toast.LENGTH_LONG).show();
-                    NotificationCompat.Builder builder =
-                            new NotificationCompat.Builder(getApplicationContext())
-                                    .setSmallIcon(R.drawable.musicicon)
-                                    .setContentTitle("Notifications Example")
-                                    .setContentText(dateFormat.format(date)+" Hello Javatpoint "+intent.getExtras().get("coordinates"));
-
-                    Intent notificationIntent = new Intent(getApplicationContext(), SplashActivity.class);
-                    PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
-                    builder.setContentIntent(contentIntent);
-
-                    // Add as notification
-                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    manager.notify(22, builder.build());
-                }
-            };
-        }
-        registerReceiver(broadcastReceiver,new IntentFilter("location_update"));
+        registerReceiver(broadcastReceiver, new IntentFilter(LocationMonitoringService.str_receiver));
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        unregisterReceiver(broadcastReceiver1);
+       // unregisterReceiver(broadcastReceiver);
     }
+
 
 
 }
